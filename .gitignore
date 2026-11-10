@@ -1,0 +1,6 @@
+/corridas.json
+/backup-*.json
+/corridas_teste_restauracao.json
+*.tmp
+__pycache__/
+

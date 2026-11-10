@@ -301,7 +301,7 @@ def encontrar_backups(pasta_programa):
 
 
 ########################################################################################################################################################################
-if __name__ == "__main__":
+def main():
     try:
         pasta_programa = os.path.dirname(__file__)
         local_arquivo = os.path.join(pasta_programa, "corridas.json")
@@ -490,3 +490,5 @@ if __name__ == "__main__":
                                 print("Backup restaurado com sucesso.")                       
                         else:
                             print("Operação cancelada.")
+if __name__ == "__main__":
+    main()

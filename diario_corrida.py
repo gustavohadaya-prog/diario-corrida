@@ -5,6 +5,9 @@ import json    # import importa o módulo
 import datetime
 
 import os
+
+
+
 #################
 corridas = []
 
@@ -298,192 +301,192 @@ def encontrar_backups(pasta_programa):
 
 
 ########################################################################################################################################################################
+if __name__ == "__main__":
+    try:
+        pasta_programa = os.path.dirname(__file__)
+        local_arquivo = os.path.join(pasta_programa, "corridas.json")
+        corridas = carregar_corridas(local_arquivo, permitir_ausente=True)
+    except json.JSONDecodeError:
+        print("Não foi possível carregar as corridas. O arquivo contém um JSON inválido e o programa será encerrado.")
+        raise SystemExit
+    except ValueError as erro:
+        print(erro)
+        raise SystemExit
+    except OSError:
+        print("Não foi possível acessar o arquivo.")
+        raise SystemExit
 
-try:
-    pasta_programa = os.path.dirname(__file__)
-    local_arquivo = os.path.join(pasta_programa, "corridas.json")
-    corridas = carregar_corridas(local_arquivo, permitir_ausente=True)
-except json.JSONDecodeError:
-    print("Não foi possível carregar as corridas. O arquivo contém um JSON inválido e o programa será encerrado.")
-    raise SystemExit
-except ValueError as erro:
-    print(erro)
-    raise SystemExit
-except OSError:
-    print("Não foi possível acessar o arquivo.")
-    raise SystemExit
 
 
-
-        
-
-    
-menu = -1
-
-while menu != 0:
-    mostrar_menu()
-    menu = checar_menu()
-
-     ########################            MENU 1
-    if menu == 1:
-        corrida = pedir_dados_corridas()
-
-        corridas_atualizadas = corridas.copy()
-        corridas_atualizadas.append(corrida)
-        try:
-            salvar_corridas(corridas_atualizadas, local_arquivo)            
-        except OSError:
-            print("Falha no salvamento. Operação cancelada.")
-        else:
-            corridas = corridas_atualizadas
-            print("Salvo com sucesso.")
-            listar_corrida(corrida, len(corridas))
             
 
-
         
-    ######################################################## MENU 2
-    elif menu == 2:
-        listar_corridas(corridas)
-    
-    ############################################## MENU 3
-    elif menu == 3:
-        mostrar_resumo(corridas)
-    ##################################################### MENU 6
-    elif menu == 7:
-        escolha = pedir_sim_não("Deseja zerar todas as corridas? (s/n): ")
+    menu = -1
 
-        if escolha == "s":
-            escolha_backup = pedir_sim_não("Deseja salvar um backup das corridas atuais? (s/n): ")
+    while menu != 0:
+        mostrar_menu()
+        menu = checar_menu()
 
-            if escolha_backup == "s":
-                agora = datetime.datetime.now()
-                nome_backup = f"backup-{agora.strftime("%Y-%m-%d_%H-%M-%S")}.json"
-                caminho_backup = os.path.join(pasta_programa, nome_backup)
+        ########################            MENU 1
+        if menu == 1:
+            corrida = pedir_dados_corridas()
 
-                try:
-                    salvar_corridas(corridas, caminho_backup)
-                    print(f"{nome_backup} salvo")
-                except OSError:
-                    print("Ocorreu um erro durante o salvamento!")
-                    print("Operação cancelada.")
-                else:
-                    corridas = apagar_corridas(corridas, local_arquivo)
+            corridas_atualizadas = corridas.copy()
+            corridas_atualizadas.append(corrida)
+            try:
+                salvar_corridas(corridas_atualizadas, local_arquivo)            
+            except OSError:
+                print("Falha no salvamento. Operação cancelada.")
+            else:
+                corridas = corridas_atualizadas
+                print("Salvo com sucesso.")
+                listar_corrida(corrida, len(corridas))
+                
 
-            elif escolha_backup == "n":
-                escolha_sem_backup = pedir_sim_não("Deseja prosseguir sem salvar um backup? (s/n): ")
 
-                if escolha_sem_backup == "s":
-                    corridas = apagar_corridas(corridas, local_arquivo)
-                else:
-                    print("Operação cancelada")
+            
+        ######################################################## MENU 2
+        elif menu == 2:
+            listar_corridas(corridas)
+        
+        ############################################## MENU 3
+        elif menu == 3:
+            mostrar_resumo(corridas)
+        ##################################################### MENU 6
+        elif menu == 7:
+            escolha = pedir_sim_não("Deseja zerar todas as corridas? (s/n): ")
 
-        elif escolha == "n":
-            print("Operação cancelada")
-    ##################################################### MENU 4
-    elif menu == 4:
-        data_inicial = pedir_data("Data inicial (DD/MM/AAAA): ")
-        data_final = pedir_data("Data final (DD/MM/AAAA): ")
+            if escolha == "s":
+                escolha_backup = pedir_sim_não("Deseja salvar um backup das corridas atuais? (s/n): ")
 
-        while data_inicial > data_final:
-            print("Data inicial maior que data final:")
+                if escolha_backup == "s":
+                    agora = datetime.datetime.now()
+                    nome_backup = f"backup-{agora.strftime("%Y-%m-%d_%H-%M-%S")}.json"
+                    caminho_backup = os.path.join(pasta_programa, nome_backup)
+
+                    try:
+                        salvar_corridas(corridas, caminho_backup)
+                        print(f"{nome_backup} salvo")
+                    except OSError:
+                        print("Ocorreu um erro durante o salvamento!")
+                        print("Operação cancelada.")
+                    else:
+                        corridas = apagar_corridas(corridas, local_arquivo)
+
+                elif escolha_backup == "n":
+                    escolha_sem_backup = pedir_sim_não("Deseja prosseguir sem salvar um backup? (s/n): ")
+
+                    if escolha_sem_backup == "s":
+                        corridas = apagar_corridas(corridas, local_arquivo)
+                    else:
+                        print("Operação cancelada")
+
+            elif escolha == "n":
+                print("Operação cancelada")
+        ##################################################### MENU 4
+        elif menu == 4:
             data_inicial = pedir_data("Data inicial (DD/MM/AAAA): ")
             data_final = pedir_data("Data final (DD/MM/AAAA): ")
 
-        selecionadas = filtrar_periodo(corridas, data_inicial, data_final)
-        
-        if len(selecionadas)> 0:                        
-            mostrar_resumo(selecionadas)
+            while data_inicial > data_final:
+                print("Data inicial maior que data final:")
+                data_inicial = pedir_data("Data inicial (DD/MM/AAAA): ")
+                data_final = pedir_data("Data final (DD/MM/AAAA): ")
 
-            print("----------- Corridas no período -------------------")            
-            listar_corridas(selecionadas)
-        else:
-            print("Nenhuma corrida encontrada nesse período.")
-    ###################################################### MENU 5
-    elif menu == 5:
-        listar_corridas(corridas)
-        if len(corridas)>0:
-            numero_corrida = pedir_numero_item(len(corridas))
-            indice_corrida = numero_corrida - 1 
-            corrida_escolhida = corridas[indice_corrida]
-            listar_corrida(corrida_escolhida, numero_corrida)
-            print("Informe os novos dados da corrida: ")
-            corrida_editada = pedir_dados_corridas(corrida_escolhida)
-            listar_corrida(corrida_editada, numero_corrida)
-            resposta = pedir_sim_não("Deseja salvar essa edição? (s/n): ")
-            if resposta == "s":
-                corridas_atualizadas = corridas.copy()
-                corridas_atualizadas[indice_corrida] = corrida_editada
-                try:
-                    salvar_corridas(corridas_atualizadas, local_arquivo)            
-                except OSError:
-                    print("Falha no salvamento. Operação cancelada.")
-                else:
-                    corridas = corridas_atualizadas
-                    print("Corrida editada com sucesso")
-                    
-            else:
-                print("Operação cancelada")
-
-    ###################################################### MENU 6
-    elif menu == 6:
-        listar_corridas(corridas)
-        if len(corridas)>0:
-            numero_corrida = pedir_numero_item(len(corridas))
-            indice_corrida = numero_corrida - 1 
-            corrida_escolhida = corridas[indice_corrida]
-            listar_corrida(corrida_escolhida, numero_corrida)
-            resposta = pedir_sim_não("Deseja excluir esta corrida? (s/n): ")
-            if resposta == "s":
-                corridas_atualizadas = corridas.copy()
-                corridas_atualizadas.pop(indice_corrida)
-                try:
-                    salvar_corridas(corridas_atualizadas, local_arquivo)                    
-                except OSError:
-                    print("Erro. Operação cancelada.")
-                else:
-                    corridas = corridas_atualizadas
-                    print("Exclusão confirmada")
-            else:
-                print("Operação cancelada")
-    elif menu == 8:
-        backups = encontrar_backups(pasta_programa)
-        if len(backups) == 0:
-            print("Nenhum backup encontrado.")
-        else:
-            for i in range(len(backups)):
-                print(f"{i+1} - {backups[i]}")
-
-            print("0 - Cancelar.")
-            numero_backup = pedir_numero_item(len(backups), permitir_cancelar=True)
+            selecionadas = filtrar_periodo(corridas, data_inicial, data_final)
             
+            if len(selecionadas)> 0:                        
+                mostrar_resumo(selecionadas)
 
-            if numero_backup == 0:
-                print("Operação Cancelada.")
+                print("----------- Corridas no período -------------------")            
+                listar_corridas(selecionadas)
             else:
-                nome_backup = backups[numero_backup - 1]
-                caminho_backup = os.path.join(pasta_programa, nome_backup)
-                try:
-                    corridas_backup = carregar_corridas(caminho_backup, permitir_ausente=False)        
-                except FileNotFoundError:
-                    print("Backup não encontrado.")
-                except json.JSONDecodeError:
-                    print("Backup contém um json inválido.")
-                except ValueError as erro:
-                    print(erro)
-                except OSError:
-                    print("Não foi possível acessar o backup")
-
-                else:
-                    listar_corridas(corridas_backup)
-                    resposta = pedir_sim_não("Restaurar este backup substituirá todas as corridas atuais. Continuar? (s/n): ")
-                    if resposta == "s":
-                        try:                            
-                            salvar_corridas(corridas_backup, local_arquivo)
-                        except OSError:
-                            print("Falha na recuperação. Operação cancelada.")     
-                        else:
-                            corridas = corridas_backup
-                            print("Backup restaurado com sucesso.")                       
+                print("Nenhuma corrida encontrada nesse período.")
+        ###################################################### MENU 5
+        elif menu == 5:
+            listar_corridas(corridas)
+            if len(corridas)>0:
+                numero_corrida = pedir_numero_item(len(corridas))
+                indice_corrida = numero_corrida - 1 
+                corrida_escolhida = corridas[indice_corrida]
+                listar_corrida(corrida_escolhida, numero_corrida)
+                print("Informe os novos dados da corrida: ")
+                corrida_editada = pedir_dados_corridas(corrida_escolhida)
+                listar_corrida(corrida_editada, numero_corrida)
+                resposta = pedir_sim_não("Deseja salvar essa edição? (s/n): ")
+                if resposta == "s":
+                    corridas_atualizadas = corridas.copy()
+                    corridas_atualizadas[indice_corrida] = corrida_editada
+                    try:
+                        salvar_corridas(corridas_atualizadas, local_arquivo)            
+                    except OSError:
+                        print("Falha no salvamento. Operação cancelada.")
                     else:
-                        print("Operação cancelada.")
+                        corridas = corridas_atualizadas
+                        print("Corrida editada com sucesso")
+                        
+                else:
+                    print("Operação cancelada")
+
+        ###################################################### MENU 6
+        elif menu == 6:
+            listar_corridas(corridas)
+            if len(corridas)>0:
+                numero_corrida = pedir_numero_item(len(corridas))
+                indice_corrida = numero_corrida - 1 
+                corrida_escolhida = corridas[indice_corrida]
+                listar_corrida(corrida_escolhida, numero_corrida)
+                resposta = pedir_sim_não("Deseja excluir esta corrida? (s/n): ")
+                if resposta == "s":
+                    corridas_atualizadas = corridas.copy()
+                    corridas_atualizadas.pop(indice_corrida)
+                    try:
+                        salvar_corridas(corridas_atualizadas, local_arquivo)                    
+                    except OSError:
+                        print("Erro. Operação cancelada.")
+                    else:
+                        corridas = corridas_atualizadas
+                        print("Exclusão confirmada")
+                else:
+                    print("Operação cancelada")
+        elif menu == 8:
+            backups = encontrar_backups(pasta_programa)
+            if len(backups) == 0:
+                print("Nenhum backup encontrado.")
+            else:
+                for i in range(len(backups)):
+                    print(f"{i+1} - {backups[i]}")
+
+                print("0 - Cancelar.")
+                numero_backup = pedir_numero_item(len(backups), permitir_cancelar=True)
+                
+
+                if numero_backup == 0:
+                    print("Operação Cancelada.")
+                else:
+                    nome_backup = backups[numero_backup - 1]
+                    caminho_backup = os.path.join(pasta_programa, nome_backup)
+                    try:
+                        corridas_backup = carregar_corridas(caminho_backup, permitir_ausente=False)        
+                    except FileNotFoundError:
+                        print("Backup não encontrado.")
+                    except json.JSONDecodeError:
+                        print("Backup contém um json inválido.")
+                    except ValueError as erro:
+                        print(erro)
+                    except OSError:
+                        print("Não foi possível acessar o backup")
+
+                    else:
+                        listar_corridas(corridas_backup)
+                        resposta = pedir_sim_não("Restaurar este backup substituirá todas as corridas atuais. Continuar? (s/n): ")
+                        if resposta == "s":
+                            try:                            
+                                salvar_corridas(corridas_backup, local_arquivo)
+                            except OSError:
+                                print("Falha na recuperação. Operação cancelada.")     
+                            else:
+                                corridas = corridas_backup
+                                print("Backup restaurado com sucesso.")                       
+                        else:
+                            print("Operação cancelada.")

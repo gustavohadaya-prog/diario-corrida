@@ -163,12 +163,28 @@ def calcular_pace_medio(corridas):
 
     return pace_medio
 
+def calcular_resumo(corridas):
+    numero_corridas = calcular_corridas(corridas)
+    distancia_total = calcular_distancia_total(corridas)
+    tempo_total = calcular_tempo_total(corridas)
+    pace_medio = calcular_pace_medio(corridas)
+
+    resumo = {
+    "numero_corridas" : numero_corridas,
+    "distancia_total" : distancia_total,
+    "tempo_total" : tempo_total,
+    "pace_medio" : pace_medio,    
+    }
+
+    return resumo
+
 def mostrar_resumo(corridas):
-    if len(corridas)> 0:                        
-        corridas_selecionadas = calcular_corridas(corridas)
-        distancia_total_selecionada = calcular_distancia_total(corridas)
-        tempo_total_selecionado = formatar_tempo_total(calcular_tempo_total(corridas))
-        pace_medio_selecionado = formatar_pace(calcular_pace_medio(corridas))
+    if len(corridas)> 0:
+        resumo = calcular_resumo(corridas)                        
+        corridas_selecionadas = resumo["numero_corridas"]
+        distancia_total_selecionada = resumo["distancia_total"]
+        tempo_total_selecionado = formatar_tempo_total(resumo["tempo_total"])
+        pace_medio_selecionado = formatar_pace(resumo["pace_medio"])
                 
         print(f"Corridas no período: {corridas_selecionadas}")
         print(f"Distancia total: {distancia_total_selecionada} km")

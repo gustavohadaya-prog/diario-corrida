@@ -6,7 +6,7 @@ import datetime
 
 import os
 
-
+import math
 
 #################
 corridas = []
@@ -24,10 +24,10 @@ def pedir_decimal(mensagem, valor_atual=None):
                 return valor_atual
             numero = float(numero)
 
-            if numero > 0:
+            if numero > 0 and math.isfinite(numero ):
                 return numero
             else:
-                print("Digite um valor maior que zero.")
+                print("Digite um número finito e maior que zero.")
         except ValueError:
             print("Digite um numero. Use ponto para decimais.")
 

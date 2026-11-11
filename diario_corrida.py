@@ -105,6 +105,18 @@ def formatar_pace(pace):
         segundos = 0
     return (f"{minutos}:{segundos:02d} min/km")
 
+
+def formatar_corrida(corrida_selecionada):
+    texto_pace = formatar_pace(corrida_selecionada["pace"])
+    if "data" in corrida_selecionada:
+        data = datetime.datetime.strptime(corrida_selecionada["data"], "%Y-%m-%d")
+        data_exibicao = data.strftime("%d/%m/%Y")
+    else:
+        data_exibicao = "Data não informada"
+    
+    return f"{corrida_selecionada['distancia_km']} km | {corrida_selecionada['tempo_min']} min | {texto_pace} | Data: {data_exibicao}"
+
+
 def formatar_tempo_total(tempo_total):
     if tempo_total < 60:
         return (f"Tempo total de corridas: {tempo_total} minutos")
@@ -196,24 +208,12 @@ def listar_corridas(corridas):
         print("Sem corridas adicionadas.")
     else:
         for i in range(len(corridas)):
-            texto_pace = formatar_pace(corridas[i]["pace"])
-            if "data" in corridas[i]:
-                data = datetime.datetime.strptime(corridas[i]["data"], "%Y-%m-%d")
-                data_exibicao = data.strftime("%d/%m/%Y")
-            else:
-                data_exibicao = "Data não informada"
-
-            print(f"{i+1} - {corridas[i]['distancia_km']} km | {corridas[i]['tempo_min']} min | {texto_pace} | Data: {data_exibicao}")
+            texto = formatar_corrida(corridas[i])
+            print(f"{i+1} - {texto}")
 
 def listar_corrida(corrida_selecionada, numero_corrida):
-    texto_pace = formatar_pace(corrida_selecionada["pace"])
-    if "data" in corrida_selecionada:
-        data = datetime.datetime.strptime(corrida_selecionada["data"], "%Y-%m-%d")
-        data_exibicao = data.strftime("%d/%m/%Y")
-    else:
-        data_exibicao = "Data não informada"
-
-    print(f"Corrida: {numero_corrida} - {corrida_selecionada['distancia_km']} km | {corrida_selecionada['tempo_min']} min | {texto_pace} | Data: {data_exibicao}")
+    texto = formatar_corrida(corrida_selecionada)
+    print(f"Corrida: {numero_corrida} - {texto}")
 
 ##### Filtrar período
 def filtrar_periodo(corridas, data_inicial, data_final):

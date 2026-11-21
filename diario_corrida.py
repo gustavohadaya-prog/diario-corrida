@@ -286,6 +286,8 @@ def carregar_corridas(local_arquivo, permitir_ausente=True):
                     valores_permitidos = [int, float] 
                     if type(valor) not in valores_permitidos:
                         raise ValueError(f"{chave} deve ser um número.")
+                    if type(valor) == float and not math.isfinite(valor):
+                        raise ValueError(f"{chave} deve ser um número finito.")
                     if not valor > 0:
                         raise ValueError(f"{chave} deve ser maior que zero")
                 if "data" in dado:
